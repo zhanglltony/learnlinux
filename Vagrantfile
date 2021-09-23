@@ -30,6 +30,11 @@ Vagrant.configure("2") do |config|
 	  lode3.vm.network :private_network, ip: "10.0.0.30"
   end
   # boxes will only be checked for updates when the user runs
+  config.vm.define "lode4" do |lode4|
+	  lode4.vm.box = "openlogic/rockylinux-8" 
+	  lode4.vm.hostname = "lode4"
+	  lode4.vm.network :private_network, ip: "10.0.0.40"
+  end
   # `vagrant box outdated`. This is not recommended.
   # config.vm.box_check_update = false
 
