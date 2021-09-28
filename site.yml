@@ -1,0 +1,69 @@
+---
+
+- hosts: all
+  become: true
+  
+  tasks:
+  - name: update
+    tags: always 
+    apt:
+      upgrade: dist      
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+  - name: install apache 2 server
+    tags: always
+    yum:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution in ["Redhat", "Rocky", "CentOS"]
+
+- hosts: webserver
+  become: true
+
+  tasks:
+  - name: install web server
+    tags: ubuntu, apache, apache2
+    apt:
+      name: 
+         - apache2
+         - libapache2-mod-php
+      state: latest
+    when: ansible_distribution == "ubuntu"
+
+  - name: install web sever
+    tags: Rocky, httpd, apache
+    yum:
+      name:
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution == "rocky"
+
+- hosts: db_server
+  become: true
+
+  tasks:
+  - name: install db server
+    tags: mariadb, Rocky, db
+    yum:
+      name: mariadb
+      state: latest
+    when: ansible_distribution in ["CentOS", "Rocky", "Redhat"]
+
+  - name: install maria db
+    tags: mariadb, db, ubuntu
+    apt:
+      name: maria-server
+      state: latest
+    when: ansible_distribution == "ubuntu"
+   
+- hosts: file_server
+  become: true
+
+  tasks:
+    - name: install samba server
+      tags: samba
+      package: 
+        name: samba
+        state: latest
+
